@@ -16,24 +16,11 @@ export const useStyles = makeStyles(() => ({
     },
   });
 
-  export const guidelines = [
-    'Secure and reliable for users',
-    'Even your grandma can use it',
-    'Works 15% faster than others'
-  ]
-
-  export const text = {
-    loginFailedMsg: 'Failed! Enter correct username and password.',
-    loginSuccessMsg: "Success! You're logged in.",
-    welcome: 'Welcome',
-    subline: 'to online help center!',
-    email: 'E-mail',
-    password: 'Password',
-    login: 'Log in',
-    signin: 'Sign-in',
-    register: 'Register',
-    createAccount: 'Sign-up',
-    notRegistered: 'Not registered yet?',
-    confirmPassword: 'Confirm Password',
-    alreadyRegistered: 'Already Registered?',
+  export const getFirstLetterUppercase = (str) => {
+    if (!str) return '';
+    const name = str?.split('@')[0];
+    const firstLetter = name.charAt(0).toUpperCase();
+    const remainLetters = name.slice(1);
+    const concatStr = `${firstLetter}${remainLetters}`
+    return concatStr;
   }

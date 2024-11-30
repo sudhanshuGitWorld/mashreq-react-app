@@ -8,3 +8,4 @@ export const STATUS_CODE = {
 export const LOGIN_API = `${BASE_URL}/login`;
 export const SIGNUP_API = `${BASE_URL}/signup`;
 export const LOGOUT_API = `${BASE_URL}/logout`;
+export const PROFILE_API = `${BASE_URL}/profile`;

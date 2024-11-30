@@ -1,6 +1,4 @@
-import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -16,21 +14,26 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import EmailOutlinedIcon from "@mui/icons-material/MailOutline";
 import HttpsOutlinedIcon from "@mui/icons-material/HttpsOutlined";
 
-import { useStyles, text } from "../utils";
+import { useStyles } from "../utils";
+import { text } from '../constant/textConstants';
 
-const Register = ({ handleRegister }) => {
-  const [password, setPassword] = useState();
-  const [confirmPassword, setConfirmPassword] = useState();
-  const [showPassword, setShowPassword] = useState(false);
-//   const navigate = useNavigate();
+const Register = ({ handleRegister, handleSigninSwitch }) => {
   const classes = useStyles();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
   const handleRegisterToggle = () => {
-    handleRegister(false);
+    handleSigninSwitch(false);
+  }
+
+  const handleUserRegistration = async () => {
+    handleRegister(email, password, confirmPassword);
   }
 
   return (
@@ -47,6 +50,8 @@ const Register = ({ handleRegister }) => {
                 name="email"
                 autoComplete="email"
                 className={classes.inputBase}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 sx={{
                 input: { color: "#4e524f" },
                 button: { color: "#C2C4CA" },
@@ -175,6 +180,7 @@ const Register = ({ handleRegister }) => {
                     textTransform: "none",
                     fontSize: "1em"
                 }}
+                onClick={() => handleUserRegistration()}
                 >
                 {text.register}
                 </Button>

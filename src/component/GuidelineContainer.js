@@ -10,7 +10,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-import { guidelines, text } from '../utils';
+import { guidelines, text } from '../constant/textConstants';
 
 const GuidelineContainer = () => {
     return (

@@ -11,8 +11,6 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
 import Stack from "@mui/material/Stack";
-import Slide from "@mui/material/Slide";
-import Snackbar from "@mui/material/Snackbar";
 
 import InputAdornment from "@mui/material/InputAdornment";
 import { ThemeProvider } from "@mui/material/styles";
@@ -23,22 +21,23 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import EmailOutlinedIcon from "@mui/icons-material/MailOutline";
 import HttpsOutlinedIcon from "@mui/icons-material/HttpsOutlined";
 
-import Alert from "./Alert";
 import Register from "./Register";
+import AppSnackbar from './Snackbar';
 import GuidelineContainer from "./GuidelineContainer";
-import { getUser } from '../redux/userSlice';
-import { useStyles, darkTheme, text } from "../utils";
-import { LOGIN_API, WITH_CREDENTIALS } from '../constant/apiUrls';
+import { getUser, addUser } from '../redux/userSlice';
+import { useStyles, darkTheme } from "../utils";
+import { text } from '../constant/textConstants';
+import { LOGIN_API, SIGNUP_API, WITH_CREDENTIALS } from '../constant/apiUrls';
 
 const Login = () => {
   const dispatch = useDispatch();
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
   const [open, setOpen] = useState(false);
+  const [password, setPassword] = useState('');
   const [isRegister, setRegister] = useState(false);
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
   const [showPassword, setShowPassword] = useState(false);
-  const vertical = "top";
-  const horizontal = "right";
+
   const navigate = useNavigate();
   const classes = useStyles();
 
@@ -54,9 +53,6 @@ const Login = () => {
   };
 
   const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
     setOpen(false);
   };
 
@@ -71,32 +67,40 @@ const Login = () => {
       const data = Object.keys(response?.data?.data)?.length > 0 ? response.data.data : [];
 
       if (data) {
-        dispatch(getUser({ ...data, isAuthenticated: true }));
+        dispatch(getUser({ ...data, isLoggedin: true }));
+        setError('');
+        setOpen(true);
         navigate('/dashboard');
       }
     } catch (error) {
         const errorMsg = error.response.data.message;
-        dispatch(getUser({ errorMsg }));
+        setError(errorMsg);
+        setOpen(true);
     }
   }
 
-  const TransitionLeft = (props) => {
-    return <Slide {...props} direction="left" />;
-  };
+  const handleRegister = async (email, password, confirmPassword) => {
+    try {
+      const payload = { email, password, confirmPassword };
+      const response = await axios.post(SIGNUP_API, payload, WITH_CREDENTIALS);
+      const data = response?.data;
+
+      if (data) {
+        dispatch(addUser({ data, email }));
+        setError('');
+        navigate('/dashboard');
+        setOpen(true);
+      }
+    } catch (error) {
+        const errorMsg = error?.response?.data?.message || error?.response?.data;
+        setError(errorMsg);
+        setOpen(true);
+    }
+  }
 
   return (
     <>
-      <Snackbar
-        open={open}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        TransitionComponent={TransitionLeft}
-        anchorOrigin={{ vertical, horizontal }}
-      >
-        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
-          {text.loginSuccessMsg}
-        </Alert>
-      </Snackbar>
+      <AppSnackbar open={open} error={error} handleClose={handleClose} isRegister={isRegister} />
       <div
         style={{
           background: "#0050b7",
@@ -134,7 +138,12 @@ const Login = () => {
                     <Box height={35} />
                     <Box sx={isRegister ? { mt: "2em" } : { mt: "4em" }}>
                       {isRegister ? (
-                        <Register handleRegister={setRegister} />
+                        <Register
+                          open={open}
+                          error={error}
+                          handleClose={handleClose}
+                          handleRegister={handleRegister}
+                          handleSigninSwitch={setRegister} />
                       ) : (
                         <Grid container spacing={1}>
                           <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
