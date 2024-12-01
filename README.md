@@ -19,6 +19,14 @@ http://localhost:3000
 # Node App
 [Mashreq-Node-App](https://github.com/sudhanshuGitWorld/mashreq-node-app)
 
+# Features:
+- You can signup with email id, password and confirm password. The new will register in database.
+- You can login with same email & passowrd.
+- Registered user can see first letter of email in header profile as user avtar.
+- You can click on profile and see the settings options.
+- You can click in logout.
+- CRUD operations in dashboard.
+
 # Note
 ## Due to less time for develop frontend, backend, database & other setup activities:
 - There is no input field validation for CRUD
