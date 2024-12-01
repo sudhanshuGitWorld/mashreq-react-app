@@ -18,6 +18,7 @@ import Paper from "@mui/material/Paper";
 
 import Header from "./Header";
 import AppSnackbar from "./Snackbar";
+import { text } from '../constant/textConstants';
 import { addEmployee, updateEmployee } from "../redux/empSlice";
 
 const Dashboard = () => {
@@ -28,17 +29,19 @@ const Dashboard = () => {
   const [rows, setRows] = useState([]);
 
   const [open, setOpen] = useState(true);
+  const [rowIdx, setRowIdx] = useState(null);
   const [isEditable, setEditable] = useState(false);
   const [isDisabled, setDisabled] = useState(true);
   const store = useSelector((state) => state);
   const { email } = store?.user?.data;
-  const { data: empData, id } = store?.empList;
+  const { addEmployeeTitle } = text;
+  const { data: empData } = store?.empList;
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const onEdit = (id) => {
+  const onEdit = (id, idx) => {
     empData?.forEach(elem => {
         if (elem.id === id) {
             const { name, empMail, phone } = elem;
@@ -46,6 +49,7 @@ const Dashboard = () => {
             setEmpMail(empMail)
             setPhone(phone)
             setEditable(true);
+            setRowIdx(idx);
             dispatch(updateEmployee(id))
         }
     });
@@ -67,16 +71,19 @@ const Dashboard = () => {
 
   const onSave = () => {
 
-    const emp = {
-        id: rows?.length + 1,
+    const newRow = {
+        id: Math.floor(Math.random() * 100),
         name,
         empMail,
         phone,
     }
-    isEditable ? setRows(rows?.map(row => {
-        if (row.id !== emp.id) return {...emp, id: row.id };
-        else return row;
-  })) : setRows(prevItems => [...prevItems, emp]);
+    isEditable ? setRows(rows?.map((row, idx) => {
+        if (idx !== rowIdx) {
+          return row;
+        } else {
+          return newRow;
+        }
+  })) : setRows(prevItems => [...prevItems, newRow]);
 
     setEditable(false);
     setName('');
@@ -95,7 +102,7 @@ const Dashboard = () => {
           id="tableTitle"
           component="div"
         >
-          Add Employee
+          {addEmployeeTitle}
         </Typography>
         <Box style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginTop: '1em' }}>
             <Box style={{ width: '30%'}}>
@@ -152,24 +159,19 @@ const Dashboard = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows?.map(({
-                id,
-                name,
-                empMail,
-                phone,
-              }) => (
+              {rows?.map((item, idx) => (
                 <TableRow
-                  key={name}
+                  key={item.id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                  <TableCell>{id}</TableCell>
-                  <TableCell>{name}</TableCell>
-                  <TableCell>{empMail}</TableCell>
-                  <TableCell>{phone}</TableCell>
+                  <TableCell>{item.id}</TableCell>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{item.empMail}</TableCell>
+                  <TableCell>{item.phone}</TableCell>
                   <TableCell>
                     <Box style={{ display: 'flex' }}>
-                        <Box className='edit-con' style={{ cursor: 'pointer', width: '20%'}} onClick={() => onEdit(id)}><EditIcon /></Box>
-                        <Box className='edit-con' style={{ cursor: 'pointer', width: '10%'}} onClick={() => onDelete(id)}><DeleteIcon /></Box>
+                        <Box className='edit-con' style={{ cursor: 'pointer', width: '20%'}} onClick={() => onEdit(item.id, idx)}><EditIcon /></Box>
+                        <Box className='edit-con' style={{ cursor: 'pointer', width: '10%'}} onClick={() => onDelete(item.id)}><DeleteIcon /></Box>
                     </Box>
                   </TableCell>
                 </TableRow>

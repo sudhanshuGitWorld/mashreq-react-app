@@ -40,6 +40,7 @@ const Login = () => {
 
   const navigate = useNavigate();
   const classes = useStyles();
+  const { login, password: pwd, email: mail, createAccount, notRegistered } = text;
 
   const boxstyle = {
     position: "absolute",
@@ -73,7 +74,7 @@ const Login = () => {
         navigate('/dashboard');
       }
     } catch (error) {
-        const errorMsg = error.response.data.message;
+        const errorMsg = error?.response?.data?.message || error?.response?.data || error?.message;
         setError(errorMsg);
         setOpen(true);
     }
@@ -92,7 +93,7 @@ const Login = () => {
         setOpen(true);
       }
     } catch (error) {
-        const errorMsg = error?.response?.data?.message || error?.response?.data;
+        const errorMsg = error?.response?.data?.message || error?.response?.data || error?.message;
         setError(errorMsg);
         setOpen(true);
     }
@@ -151,7 +152,7 @@ const Login = () => {
                               component="section"
                               sx={{ mb: 1, color: "#C2C4CA" }}
                             >
-                              {text.email}
+                              {mail}
                             </Box>
                             <InputBase
                               required
@@ -181,7 +182,7 @@ const Login = () => {
                               component="section"
                               sx={{ mb: 1, color: "#C2C4CA" }}
                             >
-                              {text.password}
+                              {pwd}
                             </Box>
                             <InputBase
                               required
@@ -236,7 +237,7 @@ const Login = () => {
                                 component="span"
                                 style={{ marginTop: "10px", color: "#c2c4ca" }}
                               >
-                                {text.notRegistered}{" "}
+                                {notRegistered}{" "}
                                 <span
                                   style={{
                                     color: "#beb4fb",
@@ -244,7 +245,7 @@ const Login = () => {
                                   }}
                                   onClick={() => setRegister(true)}
                                 >
-                                  {text.createAccount}
+                                  {createAccount}
                                 </span>
                               </Typography>
                               <Button
@@ -260,7 +261,7 @@ const Login = () => {
                                 }}
                                 onClick={handleLogin}
                               >
-                                {text.login}
+                                {login}
                               </Button>
                             </Stack>
                           </Grid>

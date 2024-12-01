@@ -23,5 +23,6 @@ export const text = {
   dashboard: 'Dashboard',
   errorText: 'error',
   successText: 'success',
+  addEmployeeTitle: 'Add Employee',
 }
   
